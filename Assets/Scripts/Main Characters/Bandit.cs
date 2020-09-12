@@ -6,6 +6,9 @@ public class Bandit : MonoBehaviour {
     [SerializeField] float      m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
 
+    public bool IsHooking = false;
+
+    private Hook                m_hook;
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
     private Sensor_Bandit       m_groundSensor;
@@ -15,21 +18,24 @@ public class Bandit : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        m_hook = GetComponent<Hook>();
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_Bandit>();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    void Update()
+    {
         //Check if character just landed on the ground
-        if (!m_grounded && m_groundSensor.State()) {
+        if (!m_grounded && m_groundSensor.State())
+        {
             m_grounded = true;
             m_animator.SetBool("Grounded", m_grounded);
         }
 
         //Check if character just started falling
-        if(m_grounded && !m_groundSensor.State()) {
+        if (m_grounded && !m_groundSensor.State())
+        {
             m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
         }
@@ -44,28 +50,43 @@ public class Bandit : MonoBehaviour {
             transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
         // Move
-        m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
+        if(!m_hook.IsHooking)
+        {
+            m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
+        }
+
+        if (Input.GetKey(KeyCode.R))
+        {
+            m_hook.Hooked();
+        }
+
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            m_hook.Unhook();
+        }
 
         //Set AirSpeed in animator
         m_animator.SetFloat("AirSpeed", m_body2d.velocity.y);
 
         // -- Handle Animations --
         //Death
-        if (Input.GetKeyDown("e")) {
-            if(!m_isDead)
+        if (Input.GetKeyDown("e"))
+        {
+            if (!m_isDead)
                 m_animator.SetTrigger("Death");
             else
                 m_animator.SetTrigger("Recover");
 
             m_isDead = !m_isDead;
         }
-            
+
         //Hurt
         else if (Input.GetKeyDown("q"))
             m_animator.SetTrigger("Hurt");
 
         //Attack
-        else if(Input.GetMouseButtonDown(0)) {
+        else if (Input.GetMouseButtonDown(0))
+        {
             m_animator.SetTrigger("Attack");
         }
 
@@ -74,7 +95,8 @@ public class Bandit : MonoBehaviour {
             m_combatIdle = !m_combatIdle;
 
         //Jump
-        else if (Input.GetKeyDown("space") && m_grounded) {
+        else if (Input.GetKeyDown("space") && m_grounded)
+        {
             m_animator.SetTrigger("Jump");
             m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
