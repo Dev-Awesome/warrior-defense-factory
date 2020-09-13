@@ -1,9 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public interface IActionStrategy
 {
+    void Idle();
+
+    event EventHandler OnBasicAttack;
+    event EventHandler OnHeavyAttack;
+
+    void OnUpdate();
 
     void BasicAttack();
     void HeavyAttack();
@@ -15,5 +22,6 @@ public interface IActionStrategy
     void Jump();
 
     void Hit();
+
     void Death();
 }

@@ -10,4 +10,7 @@ public interface ICharacterStrategy
 
     float BasicCooldown { get; set; }
     float HeavyCooldown { get; set; }
+
+    void OnHit(float damage);
+    void OnDeath();
 }
