@@ -1,107 +1,126 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class InvocationStrategy : IActionStrategy
 {
-    private readonly Animator _animator;
+    private Transform _transform;
 
+    public bool IsOnTask { get; set; }
+    public bool IsJumping { get; set; }
+    public bool IsFalling { get; set; }
+
+    private float YPosition => _transform.position.y;
+    private bool IsIdle => !IsFalling && !IsJumping && !IsOnTask;
+
+    private float _lastVerticalPosition;
+
+    public event EventHandler OnIdle;
     public event EventHandler OnBasicAttack;
     public event EventHandler OnHeavyAttack;
+    public event EventHandler OnJump;
+    public event EventHandler OnFall;
+    public event EventHandler OnRunLeft;
+    public event EventHandler OnRunRight;
 
-    public InvocationStrategy(Animator animator)
+    public InvocationStrategy(Transform transform)
     {
-        _animator = animator;
+        _transform = transform;
+
+        _lastVerticalPosition = YPosition;
     }
 
     public void OnUpdate()
     {
         Idle();
-
-        RunLeft();
-        RunRight();
-
         Jump();
         Fall();
-
+        RunLeft();
+        RunRight();
         BasicAttack();
         HeavyAttack();
-    }
 
-    public void Idle()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Time.frameCount % 5 == 0)
         {
-            _animator.SetFloat("Animation", (float)Animation.IDLE);
+            _lastVerticalPosition = YPosition;
         }
     }
 
     public void BasicAttack()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if(Input.GetKeyDown(KeyCode.Z) && IsIdle)
         {
-            _animator.SetFloat("Animation", (float)Animation.BASIC_ATTACK);
-
+            IsOnTask = true;
             OnBasicAttack?.Invoke(this, null);
-        }
-    }
-
-    public void Death()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            _animator.SetFloat("Animation", (float)Animation.DEATH);
-        }
-    }
-
-    public void Fall()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            _animator.SetFloat("Animation", (float)Animation.FALL);
         }
     }
 
     public void HeavyAttack()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha5))
+        if (Input.GetKeyDown(KeyCode.X) && IsIdle)
         {
-            _animator.SetFloat("Animation", (float)Animation.HEAVY_ATTACK);
-
+            IsOnTask = true;
             OnHeavyAttack?.Invoke(this, null);
         }
     }
 
-    public void Hit()
+    public void Fall()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha6))
+        var isFalling = _lastVerticalPosition > YPosition;
+
+        if (isFalling && !IsOnTask && !IsFalling)
         {
-            _animator.SetFloat("Animation", (float)Animation.HIT);
+            IsFalling = true;
+            OnFall?.Invoke(this, null);
+        }
+        else
+        {
+            IsFalling = false;
+        }
+    }
+
+    public void Idle()
+    {
+        var vertical = Input.GetAxisRaw("Vertical") == 0;
+        var horizontal = Input.GetAxisRaw("Horizontal") == 0;
+
+        if(vertical && horizontal && IsIdle)
+        {
+            OnIdle?.Invoke(this, null);
         }
     }
 
     public void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha7))
+        var vertical = Input.GetAxisRaw("Vertical") > 0;
+
+        if(vertical && !IsOnTask && !IsJumping)
         {
-            _animator.SetFloat("Animation", (float)Animation.JUMP);
+            IsJumping = true;
+            OnJump?.Invoke(this, null);
         }
     }
 
     public void RunLeft()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha8))
+        var horizontal = Input.GetAxisRaw("Horizontal") < 0;
+
+        if (horizontal && !IsOnTask)
         {
-            _animator.SetFloat("Animation", (float)Animation.RUN);
+            OnRunLeft?.Invoke(this, null);
         }
     }
 
     public void RunRight()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha9))
+        var horizontal = Input.GetAxisRaw("Horizontal") > 0;
+
+        if (horizontal && !IsOnTask)
         {
-            _animator.SetFloat("Animation", (float)Animation.RUN);
+            OnRunRight?.Invoke(this, null);
         }
     }
 }
