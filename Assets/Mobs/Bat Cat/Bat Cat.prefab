@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5379556001681688710}
   - component: {fileID: 7834722420093593966}
   m_Layer: 0
-  m_Name: BatCat
+  m_Name: Bat Cat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,7 +92,7 @@ Animator:
   m_GameObject: {fileID: 2823916847002609972}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e5afccd3fbcd7e5438f5d407241104e8, type: 2}
+  m_Controller: {fileID: 9100000, guid: 1fecea311dc855d4397d858ed7742810, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
