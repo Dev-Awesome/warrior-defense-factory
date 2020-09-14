@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1476765622126693278}
   - component: {fileID: 2040945373863031198}
   - component: {fileID: 8199560539116753346}
+  - component: {fileID: 3839721803005903626}
   m_Layer: 0
   m_Name: Martial Hero
   m_TagString: Untagged
@@ -93,7 +94,7 @@ Animator:
   m_GameObject: {fileID: 1457898628039058182}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e0342ab7f529cb8429ca50d793a4acc0, type: 2}
+  m_Controller: {fileID: 9100000, guid: b61d0c3323e4d3e4f93e7cbba2443767, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -102,3 +103,21 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &3839721803005903626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1457898628039058182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c283a42ae50d84fbe23b9cf7bdee95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Life: 100
+  Velocity: 5
+  BasicDamage: 10
+  HeavyDamage: 40
+  BasicCooldown: 1
+  HeavyCooldown: 3

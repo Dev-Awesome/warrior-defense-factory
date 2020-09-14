@@ -5,10 +5,17 @@ using UnityEngine;
 
 public interface IActionStrategy
 {
-    void Idle();
+    bool IsOnTask { get; set; }
 
+    event EventHandler OnIdle;
     event EventHandler OnBasicAttack;
     event EventHandler OnHeavyAttack;
+    event EventHandler OnJump;
+    event EventHandler OnFall;
+    event EventHandler OnRunLeft;
+    event EventHandler OnRunRight;
+
+    void Idle();
 
     void OnUpdate();
 
@@ -20,8 +27,4 @@ public interface IActionStrategy
 
     void Fall();
     void Jump();
-
-    void Hit();
-
-    void Death();
 }
