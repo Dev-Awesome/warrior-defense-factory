@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5480980547372275385}
   - component: {fileID: 6694843932452724399}
   m_Layer: 0
-  m_Name: DemonSlug
+  m_Name: Demon Slug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,7 +92,7 @@ Animator:
   m_GameObject: {fileID: 6165121472124563575}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ba6b73d1ebe64d94c9bece83572dc70c, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7cfcf34f62dac984b8556bbb6d29abf3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

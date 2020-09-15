@@ -7,11 +7,14 @@ using UnityEngine;
 
 public class InvocationStrategy : IActionStrategy
 {
-    private Transform _transform;
+    private readonly Transform _transform;
 
     public bool IsOnTask { get; set; }
     public bool IsJumping { get; set; }
     public bool IsFalling { get; set; }
+
+    public bool IsBasicAttackOnCD { get; set; }
+    public bool IsHeavyAttackOnCD { get; set; }
 
     private float YPosition => _transform.position.y;
     private bool IsIdle => !IsFalling && !IsJumping && !IsOnTask;
@@ -51,18 +54,20 @@ public class InvocationStrategy : IActionStrategy
 
     public void BasicAttack()
     {
-        if(Input.GetKeyDown(KeyCode.Z) && IsIdle)
+        if(Input.GetKeyDown(KeyCode.Z) && IsIdle && !IsBasicAttackOnCD)
         {
             IsOnTask = true;
+            IsBasicAttackOnCD = true;
             OnBasicAttack?.Invoke(this, null);
         }
     }
 
     public void HeavyAttack()
     {
-        if (Input.GetKeyDown(KeyCode.X) && IsIdle)
+        if (Input.GetKeyDown(KeyCode.X) && IsIdle && !IsHeavyAttackOnCD)
         {
             IsOnTask = true;
+            IsHeavyAttackOnCD = true;
             OnHeavyAttack?.Invoke(this, null);
         }
     }

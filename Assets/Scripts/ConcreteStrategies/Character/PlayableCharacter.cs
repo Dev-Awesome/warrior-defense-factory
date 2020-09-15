@@ -10,7 +10,7 @@ public class PlayableCharacter : MonoBehaviour
     public IActionStrategy MovementStrategy { get; set; }
 
     public float Life = 100f;
-    public float Velocity = 10f;
+    public float Velocity = 6f;
 
     public float BasicDamage = 10f;
     public float HeavyDamage = 40f;
@@ -31,14 +31,25 @@ public class PlayableCharacter : MonoBehaviour
             var isAnimation = stateInfo
                                 .IsName(animationName);
 
-            var isAnimationDone = stateInfo.normalizedTime > 0.99f;
-
-            UnityEngine.Debug.Log($"isAnimation {isAnimation}\tTime {stateInfo.normalizedTime}");
+            var isAnimationDone = stateInfo.normalizedTime > 0.95f;
 
             return isAnimation && isAnimationDone;
         });
 
         MovementStrategy.IsOnTask = false;
+    }
+    private IEnumerator WaitForAttackCD(float cooldown, Attack attack)
+    {
+        yield return new WaitForSeconds(cooldown);
+
+        if(attack == Attack.BASIC_ATTACK)
+        {
+            MovementStrategy.IsBasicAttackOnCD = false;
+        }
+        else
+        {
+            MovementStrategy.IsHeavyAttackOnCD = false;
+        }
     }
 
     void Start()
@@ -91,15 +102,17 @@ public class PlayableCharacter : MonoBehaviour
     private void OnBasicAttack(object sender, EventArgs e)
     {
         animator.SetTrigger("BasicAttack");
-        StartCoroutine(
-                WaitForTaskAnimation("BasicAttack"));
+        
+        StartCoroutine(WaitForTaskAnimation("BasicAttack"));
+        StartCoroutine(WaitForAttackCD(BasicCooldown, Attack.BASIC_ATTACK));
     }
 
     private void OnHeavyAttack(object sender, EventArgs e)
     {
         animator.SetTrigger("HeavyAttack");
-        StartCoroutine(
-                WaitForTaskAnimation("HeavyAttack"));
+        
+        StartCoroutine(WaitForTaskAnimation("HeavyAttack"));
+        StartCoroutine(WaitForAttackCD(HeavyCooldown, Attack.HEAVY_ATTACK));
     }
 
     private void OnJump(object sender, EventArgs e)

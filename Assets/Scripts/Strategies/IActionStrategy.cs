@@ -7,6 +7,12 @@ public interface IActionStrategy
 {
     bool IsOnTask { get; set; }
 
+    bool IsJumping { get; set; }
+    bool IsFalling { get; set; }
+
+    bool IsBasicAttackOnCD { get; set; }
+    bool IsHeavyAttackOnCD { get; set; }
+
     event EventHandler OnIdle;
     event EventHandler OnBasicAttack;
     event EventHandler OnHeavyAttack;
