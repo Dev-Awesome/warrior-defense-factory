@@ -19,6 +19,8 @@ public abstract class CharacterStrategy : MonoBehaviour
     public float BasicCooldown = 1f;
     public float HeavyCooldown = 3f;
 
+    public bool Ally;
+
     protected Rigidbody2D body;
     protected Animator animator;
 
@@ -101,6 +103,28 @@ public abstract class CharacterStrategy : MonoBehaviour
         
         StartCoroutine(WaitForTaskAnimation("HeavyAttack"));
         StartCoroutine(WaitForAttackCD(HeavyCooldown, Attack.HEAVY_ATTACK));
+    }
+
+    protected void CreateHitCollision()
+    {
+        Vector2 direction = Vector2.right;
+
+        if (transform.localScale.x < 0)
+        {
+            direction = Vector2.left;
+        }
+
+        var circleCast = Physics2D.CircleCast(transform.position + new Vector3(0.245f * direction.x, 0.14f), 0.09f, direction, 0.0f);
+
+        if (circleCast)
+        {
+            var enemy = circleCast.collider.gameObject.GetComponent<CharacterStrategy>();
+
+            if(enemy != null && enemy.Ally != Ally)
+            {
+                enemy.OnHit();
+            }
+        }
     }
 
     protected void OnJump(object sender, EventArgs e)
