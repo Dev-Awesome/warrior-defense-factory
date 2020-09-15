@@ -9,6 +9,8 @@ public interface IActionStrategy
 
     bool IsJumping { get; set; }
     bool IsFalling { get; set; }
+    bool IsIdle { get; }
+    bool IsOnAir { get; }
 
     bool IsBasicAttackOnCD { get; set; }
     bool IsHeavyAttackOnCD { get; set; }

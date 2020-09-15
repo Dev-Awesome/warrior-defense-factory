@@ -11,6 +11,7 @@ public class PlayableCharacter : MonoBehaviour
 
     public float Life = 100f;
     public float Velocity = 6f;
+    public float JumpForce = 250f;
 
     public float BasicDamage = 10f;
     public float HeavyDamage = 40f;
@@ -67,8 +68,9 @@ public class PlayableCharacter : MonoBehaviour
     private void SetUpMovement()
     {
         var transform = GetComponent<Transform>();
+        var groundSensor = GetComponents<BoxCollider2D>().First(collider => collider.isTrigger);
 
-        MovementStrategy = new InvocationStrategy(transform);
+        MovementStrategy = new InvocationStrategy(transform, groundSensor);
 
         SubscribeToMovementEvents();
     }
@@ -89,7 +91,15 @@ public class PlayableCharacter : MonoBehaviour
         var x = Input.GetAxisRaw("Horizontal");
         var y = Input.GetAxisRaw("Vertical");
 
-        animator.SetFloat("X", x);
+        if(x != 0 && y != 0)
+        {
+            animator.SetFloat("X", 0);
+        }
+        else
+        {
+            animator.SetFloat("X", x);
+        }
+
         animator.SetFloat("Y", y);
     }
 
@@ -118,7 +128,7 @@ public class PlayableCharacter : MonoBehaviour
     private void OnJump(object sender, EventArgs e)
     {
         SetPositionalAnimation();
-        body.AddForce(Vector2.up * 100f);
+        body.AddForce(Vector2.up * JumpForce);
     }
 
     private void OnFall(object sender, EventArgs e)
@@ -130,7 +140,11 @@ public class PlayableCharacter : MonoBehaviour
     private void OnRunLeft(object sender, EventArgs e)
     {
         transform.localScale = new Vector3(-1f, 1f, 1f);
-        SetPositionalAnimation();
+
+        if(!MovementStrategy.IsOnAir)
+        {
+            SetPositionalAnimation();
+        }
 
         transform.position += Vector3.left * Velocity * Time.deltaTime;
     }
@@ -138,7 +152,11 @@ public class PlayableCharacter : MonoBehaviour
     private void OnRunRight(object sender, EventArgs e)
     {
         transform.localScale = new Vector3(1f, 1f, 1f);
-        SetPositionalAnimation();
+        
+        if (!MovementStrategy.IsOnAir)
+        {
+            SetPositionalAnimation();
+        }
 
         transform.position += Vector3.right * Velocity * Time.deltaTime;
     }

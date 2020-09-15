@@ -8,6 +8,7 @@ using UnityEngine;
 public class InvocationStrategy : IActionStrategy
 {
     private readonly Transform _transform;
+    private readonly BoxCollider2D _groundSensor;
 
     public bool IsOnTask { get; set; }
     public bool IsJumping { get; set; }
@@ -17,7 +18,8 @@ public class InvocationStrategy : IActionStrategy
     public bool IsHeavyAttackOnCD { get; set; }
 
     private float YPosition => _transform.position.y;
-    private bool IsIdle => !IsFalling && !IsJumping && !IsOnTask;
+    public bool IsIdle => !IsOnAir && !IsOnTask;
+    public bool IsOnAir => !_groundSensor.IsTouchingLayers();
 
     private float _lastVerticalPosition;
 
@@ -29,9 +31,10 @@ public class InvocationStrategy : IActionStrategy
     public event EventHandler OnRunLeft;
     public event EventHandler OnRunRight;
 
-    public InvocationStrategy(Transform transform)
+    public InvocationStrategy(Transform transform, BoxCollider2D groundSensor)
     {
         _transform = transform;
+        _groundSensor = groundSensor;
 
         _lastVerticalPosition = YPosition;
     }
@@ -74,9 +77,9 @@ public class InvocationStrategy : IActionStrategy
 
     public void Fall()
     {
-        var isFalling = _lastVerticalPosition > YPosition;
+        var isFalling = _lastVerticalPosition > YPosition && IsOnAir;
 
-        if (isFalling && !IsOnTask && !IsFalling)
+        if (isFalling && !IsOnTask)
         {
             IsFalling = true;
             OnFall?.Invoke(this, null);
@@ -89,10 +92,9 @@ public class InvocationStrategy : IActionStrategy
 
     public void Idle()
     {
-        var vertical = Input.GetAxisRaw("Vertical") == 0;
         var horizontal = Input.GetAxisRaw("Horizontal") == 0;
 
-        if(vertical && horizontal && IsIdle)
+        if(horizontal && IsIdle)
         {
             OnIdle?.Invoke(this, null);
         }
@@ -100,12 +102,17 @@ public class InvocationStrategy : IActionStrategy
 
     public void Jump()
     {
-        var vertical = Input.GetAxisRaw("Vertical") > 0;
+        var vertical = Input.GetKeyDown(KeyCode.UpArrow);
 
-        if(vertical && !IsOnTask && !IsJumping)
+        if(vertical && !IsOnTask && !IsJumping && !IsFalling && !IsOnAir)
         {
             IsJumping = true;
             OnJump?.Invoke(this, null);
+        }
+
+        if(!IsOnAir && !IsFalling)
+        {
+            IsJumping = false;
         }
     }
 
