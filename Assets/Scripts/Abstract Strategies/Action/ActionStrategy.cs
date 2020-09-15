@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Linq;
 using UnityEngine;
 
-public class InvocationStrategy : IActionStrategy
+public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
 {
-    private readonly Transform _transform;
-    private readonly BoxCollider2D _groundSensor;
+    protected Transform _transform;
+    protected BoxCollider2D _groundSensor;
 
     public bool IsOnTask { get; set; }
     public bool IsJumping { get; set; }
@@ -17,11 +14,11 @@ public class InvocationStrategy : IActionStrategy
     public bool IsBasicAttackOnCD { get; set; }
     public bool IsHeavyAttackOnCD { get; set; }
 
-    private float YPosition => _transform.position.y;
+    protected float YPosition => _transform.position.y;
+    protected float _lastVerticalPosition;
+
     public bool IsIdle => !IsOnAir && !IsOnTask;
     public bool IsOnAir => !_groundSensor.IsTouchingLayers();
-
-    private float _lastVerticalPosition;
 
     public event EventHandler OnIdle;
     public event EventHandler OnBasicAttack;
@@ -31,24 +28,22 @@ public class InvocationStrategy : IActionStrategy
     public event EventHandler OnRunLeft;
     public event EventHandler OnRunRight;
 
-    public InvocationStrategy(Transform transform, BoxCollider2D groundSensor)
+    void Start()
     {
-        _transform = transform;
-        _groundSensor = groundSensor;
-
-        _lastVerticalPosition = YPosition;
+        _transform = GetComponentInParent<Transform>();
+        _groundSensor = GetComponents<BoxCollider2D>().First(collider => collider.isTrigger);
     }
 
-    public void OnUpdate()
+    void Update()
     {
-        Idle();
-        Jump();
-        Fall();
-        RunLeft();
-        RunRight();
-        BasicAttack();
-        HeavyAttack();
+        VerifyActionsOnUpdate();
 
+        UpdateLastVerticalPosition();
+    }
+
+    protected abstract void VerifyActionsOnUpdate();
+    protected void UpdateLastVerticalPosition()
+    {
         if (Time.frameCount % 5 == 0)
         {
             _lastVerticalPosition = YPosition;
@@ -57,7 +52,7 @@ public class InvocationStrategy : IActionStrategy
 
     public void BasicAttack()
     {
-        if(Input.GetKeyDown(KeyCode.Z) && IsIdle && !IsBasicAttackOnCD)
+        if(IsIdle && !IsBasicAttackOnCD)
         {
             IsOnTask = true;
             IsBasicAttackOnCD = true;
@@ -67,7 +62,7 @@ public class InvocationStrategy : IActionStrategy
 
     public void HeavyAttack()
     {
-        if (Input.GetKeyDown(KeyCode.X) && IsIdle && !IsHeavyAttackOnCD)
+        if (IsIdle && !IsHeavyAttackOnCD)
         {
             IsOnTask = true;
             IsHeavyAttackOnCD = true;
@@ -92,9 +87,7 @@ public class InvocationStrategy : IActionStrategy
 
     public void Idle()
     {
-        var horizontal = Input.GetAxisRaw("Horizontal") == 0;
-
-        if(horizontal && IsIdle)
+        if(IsIdle)
         {
             OnIdle?.Invoke(this, null);
         }
@@ -102,15 +95,13 @@ public class InvocationStrategy : IActionStrategy
 
     public void Jump()
     {
-        var vertical = Input.GetKeyDown(KeyCode.UpArrow);
-
-        if(vertical && !IsOnTask && !IsJumping && !IsFalling && !IsOnAir)
+        if(!IsOnTask && !IsOnAir)
         {
             IsJumping = true;
             OnJump?.Invoke(this, null);
         }
 
-        if(!IsOnAir && !IsFalling)
+        if(!IsOnAir || IsFalling)
         {
             IsJumping = false;
         }
@@ -118,9 +109,7 @@ public class InvocationStrategy : IActionStrategy
 
     public void RunLeft()
     {
-        var horizontal = Input.GetAxisRaw("Horizontal") < 0;
-
-        if (horizontal && !IsOnTask)
+        if (!IsOnTask)
         {
             OnRunLeft?.Invoke(this, null);
         }
@@ -128,9 +117,7 @@ public class InvocationStrategy : IActionStrategy
 
     public void RunRight()
     {
-        var horizontal = Input.GetAxisRaw("Horizontal") > 0;
-
-        if (horizontal && !IsOnTask)
+        if (!IsOnTask)
         {
             OnRunRight?.Invoke(this, null);
         }

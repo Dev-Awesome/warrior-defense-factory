@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
-public class PlayableCharacter : MonoBehaviour
+public abstract class CharacterStrategy : MonoBehaviour
 {
     public IActionStrategy MovementStrategy { get; set; }
 
@@ -19,10 +19,10 @@ public class PlayableCharacter : MonoBehaviour
     public float BasicCooldown = 1f;
     public float HeavyCooldown = 3f;
 
-    private Rigidbody2D body;
-    private Animator animator;
+    protected Rigidbody2D body;
+    protected Animator animator;
 
-    private IEnumerator WaitForTaskAnimation(string animationName)
+    protected IEnumerator WaitForTaskAnimation(string animationName)
     {
         yield return new WaitUntil(() =>
         {
@@ -39,7 +39,7 @@ public class PlayableCharacter : MonoBehaviour
 
         MovementStrategy.IsOnTask = false;
     }
-    private IEnumerator WaitForAttackCD(float cooldown, Attack attack)
+    protected IEnumerator WaitForAttackCD(float cooldown, Attack attack)
     {
         yield return new WaitForSeconds(cooldown);
 
@@ -53,28 +53,7 @@ public class PlayableCharacter : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        body = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        SetUpMovement();
-    }
-    void Update()
-    {
-        MovementStrategy.OnUpdate();
-    }
-
-    #region Set-Up functions
-    private void SetUpMovement()
-    {
-        var transform = GetComponent<Transform>();
-        var groundSensor = GetComponents<BoxCollider2D>().First(collider => collider.isTrigger);
-
-        MovementStrategy = new InvocationStrategy(transform, groundSensor);
-
-        SubscribeToMovementEvents();
-    }
-    private void SubscribeToMovementEvents()
+    protected void SubscribeToMovementEvents()
     {
         MovementStrategy.OnIdle += OnIdle;
         MovementStrategy.OnBasicAttack += OnBasicAttack;
@@ -84,9 +63,8 @@ public class PlayableCharacter : MonoBehaviour
         MovementStrategy.OnRunLeft += OnRunLeft;
         MovementStrategy.OnRunRight += OnRunRight;
     }
-    #endregion
 
-    private void SetPositionalAnimation()
+    protected void SetPositionalAnimation()
     {
         var x = Input.GetAxisRaw("Horizontal");
         var y = Input.GetAxisRaw("Vertical");
@@ -104,12 +82,12 @@ public class PlayableCharacter : MonoBehaviour
     }
 
     #region Action Handlers
-    private void OnIdle(object sender, EventArgs e)
+    protected void OnIdle(object sender, EventArgs e)
     {
         SetPositionalAnimation();
     }
 
-    private void OnBasicAttack(object sender, EventArgs e)
+    protected void OnBasicAttack(object sender, EventArgs e)
     {
         animator.SetTrigger("BasicAttack");
         
@@ -117,7 +95,7 @@ public class PlayableCharacter : MonoBehaviour
         StartCoroutine(WaitForAttackCD(BasicCooldown, Attack.BASIC_ATTACK));
     }
 
-    private void OnHeavyAttack(object sender, EventArgs e)
+    protected void OnHeavyAttack(object sender, EventArgs e)
     {
         animator.SetTrigger("HeavyAttack");
         
@@ -125,19 +103,19 @@ public class PlayableCharacter : MonoBehaviour
         StartCoroutine(WaitForAttackCD(HeavyCooldown, Attack.HEAVY_ATTACK));
     }
 
-    private void OnJump(object sender, EventArgs e)
+    protected void OnJump(object sender, EventArgs e)
     {
         SetPositionalAnimation();
         body.AddForce(Vector2.up * JumpForce);
     }
 
-    private void OnFall(object sender, EventArgs e)
+    protected void OnFall(object sender, EventArgs e)
     {
         animator.SetFloat("X", 0);
         animator.SetFloat("Y", -1);
     }
 
-    private void OnRunLeft(object sender, EventArgs e)
+    protected void OnRunLeft(object sender, EventArgs e)
     {
         transform.localScale = new Vector3(-1f, 1f, 1f);
 
@@ -149,7 +127,7 @@ public class PlayableCharacter : MonoBehaviour
         transform.position += Vector3.left * Velocity * Time.deltaTime;
     }
 
-    private void OnRunRight(object sender, EventArgs e)
+    protected void OnRunRight(object sender, EventArgs e)
     {
         transform.localScale = new Vector3(1f, 1f, 1f);
         
@@ -162,11 +140,11 @@ public class PlayableCharacter : MonoBehaviour
     }
     #endregion
 
-    private void OnDeath()
+    public void OnDeath()
     {
         animator.SetTrigger("Death");
     }
-    private void OnHit()
+    public void OnHit()
     {
         animator.SetTrigger("Hit");
     }

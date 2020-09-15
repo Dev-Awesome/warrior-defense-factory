@@ -25,8 +25,6 @@ public interface IActionStrategy
 
     void Idle();
 
-    void OnUpdate();
-
     void BasicAttack();
     void HeavyAttack();
 
