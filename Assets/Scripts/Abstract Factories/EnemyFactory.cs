@@ -12,13 +12,13 @@ public class EnemyFactory : IInvocationFactory
 
     public MeleeInvocation CreateMeleeInvocation()
     {
-        GameObject _gameObject = new GameObject("MagicInvocation", typeof(Cassiopeia));
-        return _gameObject.GetComponent<Cassiopeia>();
+        GameObject _gameObject = new GameObject("MagicInvocation", typeof(MartialHero));
+        return _gameObject.GetComponent<MartialHero>();
     }
 
     public RangedInvocation CreateRangedInvocation()
     {
-        GameObject _gameObject = new GameObject("MagicInvocation", typeof(Goblin));
-        return _gameObject.GetComponent<Goblin>();
+        GameObject _gameObject = new GameObject("MagicInvocation", typeof(Cassiopeia));
+        return _gameObject.GetComponent<Cassiopeia>();
     }
 }

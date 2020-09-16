@@ -14,10 +14,18 @@ namespace Assets.Scripts.ConcreteStrategies.Action
         private float HorizontalValue => Input.GetAxisRaw("Horizontal");
 
         public Summoner summoner;
+        public bool IsControlledPlayer;
 
         private void Awake()
         {
-            summoner.InvocationFactory = new AllyFactory();
+            if (IsControlledPlayer)
+            {
+                summoner.InvocationFactory = new AllyFactory();
+            }
+            else
+            {
+                summoner.InvocationFactory = new EnemyFactory();
+            }
         }
 
         protected override void VerifyActionsOnUpdate()

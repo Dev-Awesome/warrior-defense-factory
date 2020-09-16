@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Assets.Scripts.Enums;
+using System;
 using System.Linq;
 using UnityEngine;
+using Action = Assets.Scripts.Enums.Action;
 
 public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
 {
@@ -13,6 +15,8 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
 
     public bool IsBasicAttackOnCD { get; set; }
     public bool IsHeavyAttackOnCD { get; set; }
+
+    public Action LastAction { get; set; }
 
     protected float YPosition => _transform.position.y;
     protected float _lastVerticalPosition;
@@ -52,18 +56,20 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
 
     public void BasicAttack()
     {
-        if(IsIdle && !IsBasicAttackOnCD)
+        if(IsIdle && !IsBasicAttackOnCD && LastAction != Action.BASIC_ATTACK)
         {
             IsOnTask = true;
             IsBasicAttackOnCD = true;
             OnBasicAttack?.Invoke(this, null);
+            LastAction = Action.BASIC_ATTACK;
         }
     }
 
     public void HeavyAttack()
     {
-        if (IsIdle && !IsHeavyAttackOnCD)
+        if (IsIdle && !IsHeavyAttackOnCD && LastAction != Action.HEAVY_ATTACK)
         {
+            LastAction = Action.HEAVY_ATTACK;
             IsOnTask = true;
             IsHeavyAttackOnCD = true;
             OnHeavyAttack?.Invoke(this, null);
@@ -74,8 +80,9 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
     {
         var isFalling = _lastVerticalPosition > YPosition && IsOnAir;
 
-        if (isFalling && !IsOnTask)
+        if (isFalling && !IsOnTask && LastAction != Action.FALL)
         {
+            LastAction = Action.FALL;
             IsFalling = true;
             OnFall?.Invoke(this, null);
         }
@@ -87,16 +94,20 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
 
     public void Idle()
     {
-        if(IsIdle)
+        if(IsIdle && LastAction != Action.IDLE)
         {
+            LastAction = Action.IDLE;
             OnIdle?.Invoke(this, null);
+
+            Debug.Log("Is idling");
         }
     }
 
     public void Jump()
     {
-        if(!IsOnTask && !IsOnAir)
+        if(!IsOnTask && !IsOnAir && LastAction != Action.JUMP)
         {
+            LastAction = Action.JUMP;
             IsJumping = true;
             OnJump?.Invoke(this, null);
         }
@@ -111,6 +122,7 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
     {
         if (!IsOnTask)
         {
+            LastAction = Action.RUN_LEFT;
             OnRunLeft?.Invoke(this, null);
         }
     }
@@ -119,6 +131,7 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
     {
         if (!IsOnTask)
         {
+            LastAction = Action.RUN_RIGHT;
             OnRunRight?.Invoke(this, null);
         }
     }
