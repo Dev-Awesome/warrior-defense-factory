@@ -32,6 +32,8 @@ public abstract class CharacterStrategy : MonoBehaviour
 
     protected IEnumerator WaitForTaskAnimation(string animationName)
     {
+        bool alreadyHit = false;
+
         yield return new WaitUntil(() =>
         {
             var stateInfo = animator
@@ -39,6 +41,12 @@ public abstract class CharacterStrategy : MonoBehaviour
 
             var isAnimation = stateInfo
                                 .IsName(animationName);
+
+            if(stateInfo.normalizedTime > 0.5f && isAnimation && !alreadyHit)
+            {
+                CreateHitCollision();
+                alreadyHit = true;
+            }
 
             var isAnimationDone = stateInfo.normalizedTime > 0.95f;
 
@@ -101,8 +109,6 @@ public abstract class CharacterStrategy : MonoBehaviour
         
         StartCoroutine(WaitForTaskAnimation("BasicAttack"));
         StartCoroutine(WaitForAttackCD(BasicCooldown, Attack.BASIC_ATTACK));
-
-        CreateHitCollision();
     }
 
     protected void OnHeavyAttack(object sender, EventArgs e)
@@ -111,8 +117,6 @@ public abstract class CharacterStrategy : MonoBehaviour
         
         StartCoroutine(WaitForTaskAnimation("HeavyAttack"));
         StartCoroutine(WaitForAttackCD(HeavyCooldown, Attack.HEAVY_ATTACK));
-
-        CreateHitCollision();
     }
 
     protected void CreateHitCollision()
