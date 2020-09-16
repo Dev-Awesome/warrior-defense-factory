@@ -4,5 +4,11 @@ using UnityEngine;
 
 public class Reaper : MagicInvocation
 {
-    
+    private void Start()
+    {
+        _Start();
+
+        MovementStrategy = GetComponent<IActionStrategy>();
+        SubscribeToMovementEvents();
+    }
 }

@@ -7,6 +7,8 @@ public class Hook : MonoBehaviour
     public float Force;
     public float RopeForce;
 
+    public Gradient LineGradient;
+
     public bool IsHooking {
         get {
             return _IsHooking;
@@ -32,8 +34,10 @@ public class Hook : MonoBehaviour
 
         if(lineRenderer == null)
         {
-            Debug.LogError("Line renderer missing!");
-            enabled = false;
+            Debug.LogWarning("Line renderer missing!");
+            Debug.LogWarning("Creating component!");
+            lineRenderer = gameObject.AddComponent<LineRenderer>();
+            lineRenderer.colorGradient = LineGradient;
         }
 
         lineRenderer.enabled = false;

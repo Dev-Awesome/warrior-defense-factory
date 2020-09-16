@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class Cassiopeia : RangedInvocation
 {
-    
+    private void Start()
+    {
+        _Start();
+    }
 }

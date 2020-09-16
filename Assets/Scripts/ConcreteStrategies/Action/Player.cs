@@ -10,11 +10,15 @@ namespace Assets.Scripts.ConcreteStrategies.Action
         private bool FirstInvocation => Input.GetKeyDown(KeyCode.Alpha1);
         private bool SecondInvocation => Input.GetKeyDown(KeyCode.Alpha2);
         private bool ThirdInvocation => Input.GetKeyDown(KeyCode.Alpha3);
+        private bool HookKey => Input.GetKey(KeyCode.R);
+        private bool HookKeyUp => Input.GetKeyUp(KeyCode.R);
 
         private float HorizontalValue => Input.GetAxisRaw("Horizontal");
 
         public Summoner summoner;
         public bool IsControlledPlayer;
+
+        private Hook hook;
 
         private void Awake()
         {
@@ -26,6 +30,8 @@ namespace Assets.Scripts.ConcreteStrategies.Action
             {
                 summoner.InvocationFactory = new EnemyFactory();
             }
+
+            hook = GetComponent<Hook>();
         }
 
         protected override void VerifyActionsOnUpdate()
@@ -71,6 +77,16 @@ namespace Assets.Scripts.ConcreteStrategies.Action
             if(ThirdInvocation)
             {
                 summoner.Summon(transform.position + (Vector3.right * transform.localScale.x), EInovcationType.Ranged);
+            }
+
+            if(HookKey)
+            {
+                hook.Hooked();
+            }
+
+            if(HookKeyUp)
+            {
+                hook.Unhook();
             }
 
             Fall();

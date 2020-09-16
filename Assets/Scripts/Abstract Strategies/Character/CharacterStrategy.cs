@@ -16,7 +16,16 @@ public abstract class CharacterStrategy : MonoBehaviour
     public float BasicCooldown = 1f;
     public float HeavyCooldown = 3f;
 
+    [Space()]
+    [Header("Hit")]
+    public float H_XOffSet;
+    public float H_YOffSet;
+    public float H_Radius;
+
+    [Space()]
+
     public bool Ally;
+    public bool Alive = true;
 
     protected Rigidbody2D body;
     protected Animator animator;
@@ -92,6 +101,8 @@ public abstract class CharacterStrategy : MonoBehaviour
         
         StartCoroutine(WaitForTaskAnimation("BasicAttack"));
         StartCoroutine(WaitForAttackCD(BasicCooldown, Attack.BASIC_ATTACK));
+
+        CreateHitCollision();
     }
 
     protected void OnHeavyAttack(object sender, EventArgs e)
@@ -100,6 +111,8 @@ public abstract class CharacterStrategy : MonoBehaviour
         
         StartCoroutine(WaitForTaskAnimation("HeavyAttack"));
         StartCoroutine(WaitForAttackCD(HeavyCooldown, Attack.HEAVY_ATTACK));
+
+        CreateHitCollision();
     }
 
     protected void CreateHitCollision()
@@ -111,15 +124,17 @@ public abstract class CharacterStrategy : MonoBehaviour
             direction = Vector2.left;
         }
 
-        var circleCast = Physics2D.CircleCast(transform.position + new Vector3(0.245f * direction.x, 0.14f), 0.09f, direction, 0.0f);
+        var circleCast = Physics2D.CircleCast(transform.position + new Vector3(0.807f * direction.x, 0.726f), 0.363f, direction, 0.0f);
 
         if (circleCast)
         {
+            Debug.Log($"Collided with {circleCast.collider.gameObject.name}");
             var enemy = circleCast.collider.gameObject.GetComponent<CharacterStrategy>();
 
             if(enemy != null && enemy.Ally != Ally)
             {
                 enemy.OnHit();
+                Debug.Log($"Hitted enemy: {enemy.name}");
             }
         }
     }

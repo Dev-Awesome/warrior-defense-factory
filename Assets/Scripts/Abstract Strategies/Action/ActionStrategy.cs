@@ -24,6 +24,8 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
     public bool IsIdle => !IsOnAir && !IsOnTask;
     public bool IsOnAir => !_groundSensor.IsTouchingLayers();
 
+    public bool IsWalking { get; set; }
+
     public event EventHandler OnIdle;
     public event EventHandler OnBasicAttack;
     public event EventHandler OnHeavyAttack;
@@ -36,6 +38,8 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
     {
         _transform = GetComponentInParent<Transform>();
         _groundSensor = GetComponents<BoxCollider2D>().First(collider => collider.isTrigger);
+        
+        VerifyStart();
     }
 
     void Update()
@@ -45,7 +49,14 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
         UpdateLastVerticalPosition();
     }
 
+    private void FixedUpdate()
+    {
+        VerifyActionsOnFixedUpdate();
+    }
+
     protected abstract void VerifyActionsOnUpdate();
+    protected virtual void VerifyActionsOnFixedUpdate() { }
+    protected virtual void VerifyStart() { }
     protected void UpdateLastVerticalPosition()
     {
         if (Time.frameCount % 5 == 0)
@@ -62,6 +73,7 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
             IsBasicAttackOnCD = true;
             OnBasicAttack?.Invoke(this, null);
             LastAction = Action.BASIC_ATTACK;
+            IsWalking = false;
         }
     }
 
@@ -73,6 +85,7 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
             IsOnTask = true;
             IsHeavyAttackOnCD = true;
             OnHeavyAttack?.Invoke(this, null);
+            IsWalking = false;
         }
     }
 
@@ -98,8 +111,7 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
         {
             LastAction = Action.IDLE;
             OnIdle?.Invoke(this, null);
-
-            Debug.Log("Is idling");
+            IsWalking = false;
         }
     }
 
@@ -124,6 +136,7 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
         {
             LastAction = Action.RUN_LEFT;
             OnRunLeft?.Invoke(this, null);
+            IsWalking = true;
         }
     }
 
@@ -133,6 +146,7 @@ public abstract class ActionStrategy : MonoBehaviour, IActionStrategy
         {
             LastAction = Action.RUN_RIGHT;
             OnRunRight?.Invoke(this, null);
+            IsWalking = true;
         }
     }
 }
