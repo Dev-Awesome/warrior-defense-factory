@@ -5,6 +5,12 @@ This game has the purpose to apply the Factory design pattern to an Unity projec
 *All the assets are from itch.io and unity assets store.*
 *Some of them might be modified by us.*
 
+See below to check where we get this assets!
+
+<p align="center">
+<img src="https://github.com/RiccardoCafa/Unity-Factory-DP-Learning/blob/master/Screenshot_1.jpg?raw=true" width="400">
+</p>
+    
 ### Game Idea
 
 There are an arena with two warrios, each one can invoke a melee, mage or ranged soldier, then they will fight.
@@ -122,6 +128,30 @@ private void Awake()
 }
 [...]
 ```
+
+We added our factory as a component to the player.
+
+<img src="https://github.com/RiccardoCafa/Unity-Factory-DP-Learning/blob/master/Screenshot_3.jpg?raw=true" width="300">
+
+### Game
+
+The game isn't so stable, indeed it has a lot of bugs, but what matters here is the Factory design pattern!
+
+<img src="https://github.com/RiccardoCafa/Unity-Factory-DP-Learning/blob/master/Screenshot_2.jpg?raw=true" width="600">
+
+### Assets
+
+This is our list of assets that we used for this project!
+
+- https://szadiart.itch.io/animated-character-pack
+- https://luizmelo.itch.io/hero-knight
+- https://luizmelo.itch.io/wizard-pack
+- https://luizmelo.itch.io/martial-hero
+- https://luizmelo.itch.io/monsters-creatures-fantasy
+- https://oco.itch.io/medieval-fantasy-character-pack-4
+- https://trixelized.itch.io/starstring-fields
+- https://assetstore.unity.com/packages/2d/characters/bandits-pixel-art-104130
+- https://assetstore.unity.com/packages/vfx/particles/cartoon-fx-free-109565
 
 ### Free to study and to use
 
