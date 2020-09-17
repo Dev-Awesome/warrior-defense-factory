@@ -32,6 +32,7 @@ public class AIEnemy : ActionStrategy
     private int WalkDirection;
     private int LastDirection;
     private float LastX;
+    private bool CanJump = true;
     private bool CanAttack = true;
     [SerializeField] private AIStatus Status = AIStatus.Idle;
 
@@ -93,17 +94,25 @@ public class AIEnemy : ActionStrategy
         {
             AIIdle();
         }
+        #endregion
 
-        if(IsWalking && Time.frameCount % 5 == 0)
+        if (IsWalking && CanJump && Time.frameCount % 5 == 0)
         {
             if(Mathf.Abs(LastX - transform.position.x) < DifferenceToJump)
             {
                 Jump();
+                CanJump = false;
+                StartCoroutine(WaitToJump());
             }
         }
 
         LastX = transform.position.x;
-        #endregion
+    }
+
+    protected IEnumerator WaitToJump()
+    {
+        yield return new WaitForSeconds(1f);
+        CanJump = true;
     }
 
     protected void OnAIIdle()
