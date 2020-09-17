@@ -1,37 +1,141 @@
-## Welcome to GitHub Pages
+## Welcome to Factory Design Pattern Unity Example
 
-You can use the [editor on GitHub](https://github.com/RiccardoCafa/TheLegendsOfLapa/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+This game has the purpose to apply the Factory design pattern to an Unity project just for educational intentions.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+*All the assets are from itch.io and unity assets store.*
+*Some of them might be modified by us.*
 
-### Markdown
+### Game Idea
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+There are an arena with two warrios, each one can invoke a melee, mage or ranged soldier, then they will fight.
 
-```markdown
-Syntax highlighted code block
+### Abstract Factory class 
 
-# Header 1
-## Header 2
-### Header 3
+This is the base of our factories. We have 3 references to each kind of soldier and 3 functions to instantiate them. They are virtual so we can modified this implementation if we need to.
 
-- Bulleted
-- List
+```C#
+using UnityEngine;
 
-1. Numbered
-2. List
+public abstract class InvocationFactory : MonoBehaviour
+{
+    [SerializeField] private MeleeInvocation MeleeInvocation;
+    [SerializeField] private RangedInvocation RangedInvocation;
+    [SerializeField] private MagicInvocation MagicInvocation;
 
-**Bold** and _Italic_ and `Code` text
+    public virtual MeleeInvocation InvokeMelee()
+    {
+        return Instantiate(MeleeInvocation);
+    }
 
-[Link](url) and ![Image](src)
+    public virtual RangedInvocation InvokeRanged()
+    {
+        return Instantiate(RangedInvocation);
+    }
+
+    public virtual MagicInvocation InvokeMagic()
+    {
+        return Instantiate(MagicInvocation);
+    }
+}
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+From this point we are able to create as many Factory as we want to. This ally factory changes the *Martial Hero* strategy to be a more clever AI.
 
-### Jekyll Themes
+```C#
+public class AllyFactory : InvocationFactory
+{
+    public override MeleeInvocation InvokeMelee()
+    {
+        MartialHero martialHero = base.InvokeMelee() as MartialHero;
+        martialHero.gameObject.AddComponent<MoreCleverAIEnemy>();
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/RiccardoCafa/TheLegendsOfLapa/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+        return martialHero;
+    }
+}
+```
+
+The same happens for our enemy factory, but we change the *Reaper* strategy.
+
+```C#
+public class EnemyFactory : InvocationFactory
+{
+    public override MagicInvocation InvokeMagic()
+    {
+        Reaper reaper = base.InvokeMagic() as Reaper;
+        reaper.gameObject.AddComponent<MoreCleverAIEnemy>();
+
+        return reaper;
+    }
+}
+```
+
+We also made a summoner object that makes all the magic happens and be more interesting...
+
+If you analyse carefully this piece of code, you will be able to noticed that we can change the factory whenever we want, changing the soldiers being created, without any trouble! Just creating another factory, that's amazing!
+
+```C#
+using UnityEngine;
+
+public class Summoner : MonoBehaviour
+{
+    // Singleton.
+    public static Summoner Instance;
+
+    public InvocationFactory factory;
+
+    public bool CreatingAllies;
+
+    public void Summon(Vector3 position, EInovcationType type)
+    {
+        if (factory == null)
+        {
+            Debug.LogError("Factory doesn't exist!");
+            return;
+        }
+
+        GameObject _gameObject = null;
+
+        switch(type)
+        {
+            case EInovcationType.Magic: _gameObject = factory.InvokeMagic().gameObject;
+                break;
+            case EInovcationType.Melee: _gameObject = factory.InvokeMelee().gameObject;
+                break;
+            case EInovcationType.Ranged: _gameObject = factory.InvokeRanged().gameObject;
+                break;
+        }
+        if (_gameObject == null) return;
+        _gameObject.transform.position = position;
+    }
+}
+```
+
+In this case, we get the factory by looking for it on our gameObject component array, but we could do a lot more. It just depends on your problem.
+
+In player class:
+```C#
+[...]
+private void Awake()
+{
+    summoner.factory = GetComponent<InvocationFactory>();
+    [...]
+}
+[...]
+```
+
+### Free to study and to use
+
+Feel free to use this project for your studies and apply to your projects.
 
 ### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Found some error/bug? Tell us, we'll be glad to fix and improve this educational material. It also applies to our english writing!
+
+Have some question? Feel free to ask. There is my contact:
+e-mail: riccardocafagna@50k.dev
+check also my instagram: @ricc.dev
+
+
+Happy to be helping you!
+
+Team 50k.
