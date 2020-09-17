@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8139818046461283879}
   - component: {fileID: 8360986662142995055}
   - component: {fileID: 642456445453942131}
+  - component: {fileID: -6875666947874605792}
   m_Layer: 0
   m_Name: Wizard
   m_TagString: Untagged
@@ -178,3 +179,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.1542086, y: 0.045199096}
   m_EdgeRadius: 0
+--- !u!114 &-6875666947874605792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5480018989016771958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0783b0dfb913c5c4296fc5cc7da6b7fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Life: 100
+  Velocity: 6
+  JumpForce: 250
+  BasicDamage: 10
+  HeavyDamage: 40
+  BasicCooldown: 1
+  HeavyCooldown: 3
+  H_XOffSet: 0
+  H_YOffSet: 0
+  H_Radius: 0
+  Ally: 1
+  Alive: 1
