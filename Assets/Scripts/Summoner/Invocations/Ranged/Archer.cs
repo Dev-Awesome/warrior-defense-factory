@@ -1,8 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Archer : RangedInvocation
+﻿public class Archer : RangedInvocation
 {
-    
+    protected override void SetIAConfig()
+    {
+        AI.CircleRadius = 10f;
+        AI.CircleOffsetX = -0.25f;
+        AI.CircleOffsetY = 0f;
+        AI.DistanceToAttack = 0.5f;
+    }
 }

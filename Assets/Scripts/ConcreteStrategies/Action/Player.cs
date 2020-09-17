@@ -10,8 +10,8 @@ namespace Assets.Scripts.ConcreteStrategies.Action
         private bool FirstInvocation => Input.GetKeyDown(KeyCode.Alpha1);
         private bool SecondInvocation => Input.GetKeyDown(KeyCode.Alpha2);
         private bool ThirdInvocation => Input.GetKeyDown(KeyCode.Alpha3);
-        private bool HookKey => Input.GetKey(KeyCode.R);
-        private bool HookKeyUp => Input.GetKeyUp(KeyCode.R);
+        private bool HookKey => Input.GetMouseButton(0);
+        private bool HookKeyUp => Input.GetMouseButtonUp(0);
 
         private float HorizontalValue => Input.GetAxisRaw("Horizontal");
 

@@ -2,14 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class RangedInvocation : CharacterStrategy
+public abstract class RangedInvocation : Invocation
 {
-    protected void _Start()
-    {
-        body = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
 
-        MovementStrategy = GetComponent<AIEnemy>();
-        SubscribeToMovementEvents();
-    }
 }

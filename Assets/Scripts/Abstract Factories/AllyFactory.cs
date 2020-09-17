@@ -12,13 +12,13 @@ public class AllyFactory : IInvocationFactory
 
     public MeleeInvocation CreateMeleeInvocation()
     {
-        GameObject _gameObject = new GameObject("MagicInvocation", typeof(MartialHero));
+        GameObject _gameObject = new GameObject("MeleeInvocation", typeof(MartialHero));
         return _gameObject.GetComponent<MartialHero>();
     }
 
     public RangedInvocation CreateRangedInvocation()
     {
-        GameObject _gameObject = new GameObject("MagicInvocation", typeof(Archer));
+        GameObject _gameObject = new GameObject("RangedInvocation", typeof(Archer));
         return _gameObject.GetComponent<Archer>();
     }
 }

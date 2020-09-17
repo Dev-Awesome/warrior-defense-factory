@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Cassiopeia : RangedInvocation
+﻿public class Cassiopeia : RangedInvocation
 {
-    private void Start()
+    protected override void SetIAConfig()
     {
-        _Start();
+        AI.CircleRadius = 10f;
+        AI.CircleOffsetX = -0.25f;
+        AI.CircleOffsetY = 0f;
+        AI.DistanceToAttack = 0.5f;
     }
 }

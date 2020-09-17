@@ -1,21 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace Assets.Scripts.Invocations.Melee
+﻿public class HeroKnight : MeleeInvocation
 {
-    public class HeroKnight : MonoBehaviour
+    protected override void SetIAConfig()
     {
-
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        AI.CircleRadius = 10f;
+        AI.CircleOffsetX = -0.25f;
+        AI.CircleOffsetY = 0f;
+        AI.DistanceToAttack = 0.5f;
     }
 }

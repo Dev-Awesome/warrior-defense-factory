@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Reaper : MagicInvocation
+﻿public class Reaper : MagicInvocation
 {
-    private void Start()
+    protected override void SetIAConfig()
     {
-        _Start();
-
-        MovementStrategy = GetComponent<IActionStrategy>();
-        SubscribeToMovementEvents();
+        AI.CircleRadius = 10f;
+        AI.CircleOffsetX = -0.25f;
+        AI.CircleOffsetY = 0f;
+        AI.DistanceToAttack = 0.5f;
     }
 }

@@ -13,21 +13,21 @@ public enum AIStatus
 public class AIEnemy : ActionStrategy
 {
     [Header("AI Range Detection")]
-    public float CircleRadius = 0.350f;
-    public float CircleOffsetX = 0f;
+    public float CircleRadius = 10f;
+    public float CircleOffsetX = -0.25f;
     public float CircleOffsetY = 0f;
 
     [Tooltip("How many frames to detected if a enemy entered in the zone")]
     public int DetectionFrameRate = 5;
 
     [Header("AI Range Loop")]
-    public float DistanceToAttack = 0.2f;
+    public float DistanceToAttack = 0.5f;
     public float WalkLength = 5f;
     [Range(0.5f, 2.5f)]
     public float TimeToWalk = .5f;
     public Vector3 StartPosition;
 
-    public float DifferenceToJump = 0.05f;
+    public float DifferenceToJump = 0.01f;
 
     private int WalkDirection;
     private int LastDirection;
@@ -37,6 +37,7 @@ public class AIEnemy : ActionStrategy
 
     private CharacterStrategy character;
     private CharacterStrategy followingCharacter;
+
     private GameObject following {
         get {
             return followingCharacter == null ? null : followingCharacter.gameObject;
@@ -107,7 +108,6 @@ public class AIEnemy : ActionStrategy
 
     protected void OnAIIdle()
     {
-        print($"{name} >> Waiting to walk");
         StartCoroutine(WaitToWalk());
     }
 
@@ -118,17 +118,14 @@ public class AIEnemy : ActionStrategy
             if(WalkDirection == -1)
             {
                 RunRight();
-                print($"{name} >> Walking to left");
             } else
             {
                 RunLeft();
-                print($"{name} >> Walking to right");
             }
 
             if(LastDirection != WalkDirection)
             {
                 StartCoroutine(ChangeDirection());
-                print($"{name} >> Changing direction");
             }
 
             LastDirection = WalkDirection;
@@ -142,11 +139,9 @@ public class AIEnemy : ActionStrategy
             if (Random.Range(0, 2) == 0)
             {
                 HeavyAttack();
-                print($"{name} >> Heavy Attack");
             } else
             {
                 BasicAttack();
-                print($"{name} >> Basic Attack");
             }
             CanAttack = false;
             StartCoroutine(NextAttack());
@@ -157,7 +152,6 @@ public class AIEnemy : ActionStrategy
     {
         Vector3 ToEnemyDistance = (following.transform.position - transform.position);
         //Vector3 direction = ToEnemyDistance.normalized;
-        print($"{name} >> Distance to enemy {ToEnemyDistance} m");
         if (ToEnemyDistance.sqrMagnitude >= CircleRadius)
         {
             followingCharacter = null;
@@ -184,7 +178,6 @@ public class AIEnemy : ActionStrategy
     {
         float ToStartDistance = DistanceToStartPoint.x;
 
-        print($"{name} >> Back to start");
         if (ToStartDistance > 1f)
         {
             RunRight();

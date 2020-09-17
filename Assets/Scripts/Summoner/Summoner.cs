@@ -39,6 +39,7 @@ public class Summoner : MonoBehaviour
         _gameObject.transform.position = position;
         _gameObject.AddComponent(melee.GetType());
         _gameObject.GetComponent<MeleeInvocation>().Ally = CreatingAllies;
+        if (_gameObject.GetComponent<AIEnemy>() == null) _gameObject.AddComponent<AIEnemy>();
         Destroy(melee.gameObject);
     }
 
@@ -49,6 +50,7 @@ public class Summoner : MonoBehaviour
         _gameObject.transform.position = position;
         _gameObject.AddComponent(ranged.GetType());
         _gameObject.GetComponent<RangedInvocation>().Ally = CreatingAllies;
+        if (_gameObject.GetComponent<AIEnemy>() == null) _gameObject.AddComponent<AIEnemy>();
         Destroy(ranged.gameObject);
     }
 
@@ -59,6 +61,7 @@ public class Summoner : MonoBehaviour
         _gameObject.transform.position = position;
         _gameObject.AddComponent(magic.GetType());
         _gameObject.GetComponent<MagicInvocation>().Ally = CreatingAllies;
+        if (_gameObject.GetComponent<AIEnemy>() == null) _gameObject.AddComponent<AIEnemy>();
         Destroy(magic.gameObject);
     }
 }

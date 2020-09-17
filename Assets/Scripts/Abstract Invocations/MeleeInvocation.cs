@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class MeleeInvocation : CharacterStrategy
+public abstract class MeleeInvocation : Invocation
 {
-    protected void _Start()
-    {
-        body = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-    }
+    
 }
