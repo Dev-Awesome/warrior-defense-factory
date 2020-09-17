@@ -27,7 +27,7 @@ public class AIEnemy : ActionStrategy
     public float TimeToWalk = .5f;
     public Vector3 StartPosition;
 
-    public float DifferenceToJump = 0.01f;
+    public float DifferenceToJump = 0.1f;
 
     private int WalkDirection;
     private int LastDirection;
