@@ -12,17 +12,17 @@ public abstract class InvocationFactory : MonoBehaviour
 
     // This will instantiate our invocations
 
-    public virtual MeleeInvocation InvocateMelee()
+    public virtual MeleeInvocation InvokeMelee()
     {
         return Instantiate(MeleeInvocation);
     }
 
-    public virtual RangedInvocation InvocateRanged()
+    public virtual RangedInvocation InvokeRanged()
     {
         return Instantiate(RangedInvocation);
     }
 
-    public virtual MagicInvocation InvocateMagic()
+    public virtual MagicInvocation InvokeMagic()
     {
         return Instantiate(MagicInvocation);
     }

@@ -3,10 +3,10 @@
 public class EnemyFactory : InvocationFactory
 {
     // I could this the same thing here
-    public override MagicInvocation InvocateMagic()
+    public override MagicInvocation InvokeMagic()
     {
         // But instead I want to the Magic one be the clever AI
-        Reaper reaper = base.InvocateMagic() as Reaper;
+        Reaper reaper = base.InvokeMagic() as Reaper;
         reaper.gameObject.AddComponent<MoreCleverAIEnemy>();
 
         return reaper;

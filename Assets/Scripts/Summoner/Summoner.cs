@@ -21,11 +21,11 @@ public class Summoner : MonoBehaviour
 
         switch(type)
         {
-            case EInovcationType.Magic: _gameObject = factory.InvocateMagic().gameObject;
+            case EInovcationType.Magic: _gameObject = factory.InvokeMagic().gameObject;
                 break;
-            case EInovcationType.Melee: _gameObject = factory.InvocateMelee().gameObject;
+            case EInovcationType.Melee: _gameObject = factory.InvokeMelee().gameObject;
                 break;
-            case EInovcationType.Ranged: _gameObject = factory.InvocateRanged().gameObject;
+            case EInovcationType.Ranged: _gameObject = factory.InvokeRanged().gameObject;
                 break;
         }
         if (_gameObject == null) return;
